@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 		exit(0);
 	}
 
-	/* initialize SDL_net */
+	/* initialize netlib */
 	if (netlib_init() == -1)
 	{
 		printf("netlib_init: %s\n", netlib_get_error());
@@ -110,7 +110,7 @@ int main(int argc, char **argv)
 		}
 	}
 
-	/* shutdown SDL_net */
+	/* shutdown netlib */
 	netlib_quit();
 
 	return 0;
