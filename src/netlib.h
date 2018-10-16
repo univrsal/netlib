@@ -140,7 +140,7 @@ extern DECLSPEC void NETLIB_CALL netlib_tcp_close(tcp_socket sock);
 /* The maximum addresses bound to a single UDP socket channel */
 #define NETLIB_MAX_UDPADDRESSES 4
 
-typedef struct _upd_socket* udp_socket;
+typedef struct _udp_socket* udp_socket;
 
 typedef struct {
 	int channel;        /* The src/dst channel of the packet */
@@ -356,6 +356,8 @@ FORCE_INLINE uint32_t _netlib_read32(const void *areap)
 	const uint8_t *area = (const uint8_t*)areap;
 	return ((uint32_t)area[0]) << 24 | ((uint32_t)area[1]) << 16 | ((uint32_t)area[2]) << 8 | ((uint32_t)area[3]);
 }
+
+extern DECLSPEC uint32_t NETLIB_CALL netlib_swap_BE32(uint32_t val);
 
 #ifdef __cplusplus
 }

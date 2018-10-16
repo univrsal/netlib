@@ -28,6 +28,10 @@ set(NETLIB_SRC
     src/util.h)
 
 add_library("netlib" SHARED ${NETLIB_SRC})
+target_include_directories("netlib" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
+
+target_link_libraries(netlib
+    ${netlib_PLATFORM_DEPS})
 
 # Tests
 add_executable("netlib_client" "tests/client.c")

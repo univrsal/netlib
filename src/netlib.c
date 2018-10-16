@@ -54,6 +54,12 @@ const char* NETLIB_CALL netlib_get_error()
 	return errorbuf;
 }
 
+uint32_t netlib_swap_BE32(uint32_t val)
+{
+	val = ((val << 8) & 0xFF00FF00) | ((val >> 8) & 0xFF00FF);
+	return (val << 16) | (val >> 16);
+}
+
 int netlib_init(void)
 {
 	if (!netlib_started)

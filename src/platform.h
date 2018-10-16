@@ -55,8 +55,8 @@ typedef int socklen_t;
 #endif /* __USE_W32_SOCKETS */
 
 #ifdef __USE_W32_SOCKETS
-#define SDLNet_GetLastError WSAGetLastError
-#define SDLNet_SetLastError WSASetLastError
+#define netlib_get_last_error WSAGetLastError
+#define netlib_set_last_error WSASetLastError
 #ifndef EINTR
 #define EINTR WSAEINTR
 #endif
