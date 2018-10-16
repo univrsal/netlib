@@ -61,8 +61,8 @@ typedef int socklen_t;
 #define EINTR WSAEINTR
 #endif
 #else
-int SDLNet_GetLastError(void);
-void SDLNet_SetLastError(int err);
+int netlib_get_last_error(void);
+void netlib_set_last_error(int err);
 #endif
 
 #endif
