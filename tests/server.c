@@ -17,6 +17,7 @@
 #include <stdio.h>
 #ifndef _MSC_VER
 #include <unistd.h>
+#define Sleep sleep
 #endif
 #ifdef WINDOWS
 #include <Windows.h>

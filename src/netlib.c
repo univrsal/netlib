@@ -14,6 +14,8 @@
 
 #include "platform.h"
 #include "netlib.h"
+#include <string.h>
+#include <stdarg.h>
 
 const netlib_version* netlib_get_version()
 {
@@ -37,7 +39,6 @@ void netlib_set_last_error(int err)
 	errno = err;
 }
 #endif
-
 
 static char errorbuf[1024];
 
@@ -133,9 +134,14 @@ int netlib_resolve_host(ip_address* address, const char* host, uint16_t port)
 			struct hostent *hp;
 			hp = gethostbyname(host);
 			if (hp)
+			{
 				memcpy(&address->host, hp->h_addr, hp->h_length);
+			}
 			else
+			{
 				retval = -1;
+				netlib_set_error("failed to get host from '%s'", host);
+			}
 		}
 	}
 	address->port = netlib_read16(&port);
