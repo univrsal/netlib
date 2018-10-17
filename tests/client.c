@@ -21,8 +21,29 @@
 #include <string.h>
 #include <netlib.h>
 
+#define MAX_ADDRESSES   10
+
+void show_interfaces()
+{
+	ip_address addresses[MAX_ADDRESSES];
+	int i, count;
+
+	count = netlib_get_local_addresses(addresses, MAX_ADDRESSES);
+	printf("Found %d local addresses\n", count);
+	for (i = 0; i < count; ++i) {
+		printf("%d: %d.%d.%d.%d - %s\n", i + 1,
+			(addresses[i].host >> 0) & 0xFF,
+			(addresses[i].host >> 8) & 0xFF,
+			(addresses[i].host >> 16) & 0xFF,
+			(addresses[i].host >> 24) & 0xFF,
+			netlib_resolve_ip(&addresses[i]));
+	}
+}
+
 int main(int argc, char **argv)
 {
+	show_interfaces();
+
 	ip_address ip;
 	tcp_socket sock;
 	char message[1024];

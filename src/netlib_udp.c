@@ -138,7 +138,7 @@ void netlib_free_packets(udp_packet** packetV)
 /* Open a UDP network socket
    If 'port' is non-zero, the UDP socket is bound to a fixed local port.
 */
-udp_socket SDLNet_UDP_Open(uint16_t port)
+udp_socket netlib_udp_open(uint16_t port)
 {
 	udp_socket sock;
 	struct sockaddr_in sock_addr;

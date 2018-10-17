@@ -30,6 +30,7 @@ int main(int argc, char **argv)
 	tcp_socket server, client;
 	char message[1024];
 	int len;
+	uint32_t server_ip;
 	uint32_t ipaddr;
 	uint16_t port;
 
@@ -56,6 +57,10 @@ int main(int argc, char **argv)
 		printf("netlib_resolve_host: %s\n", netlib_get_error());
 		exit(3);
 	}
+	server_ip = ip.host;
+	printf("Started server on %d.%d.%d.%d port %hu\n",
+		server_ip >> 24, server_ip >> 16 & 0xff,
+		server_ip >> 8 & 0xff, server_ip & 0xff, port);
 
 	/* open the server socket */
 	server = netlib_tcp_open(&ip);

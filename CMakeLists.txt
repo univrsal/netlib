@@ -24,6 +24,7 @@ set(NETLIB_SRC
     src/netlib.h
     src/netlib_tcp.c
     src/netlib_udp.c
+    src/netlib_select.c
     src/platform.h
     src/util.h)
 
