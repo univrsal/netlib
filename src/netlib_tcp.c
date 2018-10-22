@@ -250,7 +250,7 @@ int netlib_tcp_send(tcp_socket sock, const void* datap, int len)
 }
 
 /* Receive up to 'maxlen' bytes of data over the non-server socket 'sock',
-   and store them in the buffer pointed to by 'data'.
+   and store them in the data pointed to by 'data'.
    This function returns the actual amount of data received.  If the return
    value is less than or equal to zero, then either the remote connection was
    closed, or an unknown socket error occurred.
@@ -286,4 +286,20 @@ void netlib_tcp_close(tcp_socket sock)
 		
 		free(sock);
 	}
+}
+
+/* === Buffer API (Not part of SDL_net) === */
+
+int netlib_tcp_send_buf(tcp_socket sock, netlib_byte_buf* buf)
+{
+	if (!buf)
+		return -1;
+	return netlib_tcp_send(sock, buf->data, buf->length);
+}
+
+int netlib_tcp_recv_buf(tcp_socket sock, netlib_byte_buf* buf)
+{
+	if (!buf)
+		return -1;
+	return netlib_tcp_recv(sock, buf->data, buf->length);
 }

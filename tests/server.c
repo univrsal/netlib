@@ -97,8 +97,16 @@ int main(int argc, char **argv)
 			ipaddr & 0xff,
 			remoteip->port);
 
-		/* read the buffer from client */
-		len = netlib_tcp_recv(client, message, 1024);
+		/* read the data from client */
+		netlib_byte_buf* buf = netlib_alloc_byte_buf(12);
+
+		if (!buf)
+		{
+			printf("netlib_alloc_byte_buf: %s\n", netlib_get_error());
+			break;
+		}
+
+		len = netlib_tcp_recv(client, buf->data, buf->length);
 		netlib_tcp_close(client);
 		if (!len)
 		{
@@ -107,7 +115,18 @@ int main(int argc, char **argv)
 		}
 
 		/* print out the message */
-		printf("Received: %.*s\n", len, message);
+		uint16_t a, b;
+		uint32_t c;
+
+		if (!netlib_read_uint16_t(buf, &a))
+			printf("netlib_read_uint16_t: %s\n", netlib_get_error());
+		if (!netlib_read_uint16_t(buf, &b))
+			printf("netlib_read_uint16_t: %s\n", netlib_get_error());
+		if (!netlib_read_uint32_t(buf, &c))
+			printf("netlib_read_uint32_t: %s\n", netlib_get_error());
+
+		printf("Received: %u %u %u | 0x%X\n", a, b, c, c);
+		netlib_free_byte_buf(buf);
 
 		if (message[0] == 'Q')
 		{

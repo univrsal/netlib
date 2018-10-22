@@ -55,10 +55,153 @@ const char* NETLIB_CALL netlib_get_error()
 	return errorbuf;
 }
 
-uint32_t netlib_swap_BE32(uint32_t val)
+DECLSPEC netlib_byte_buf* NETLIB_CALL netlib_alloc_byte_buf(uint8_t size)
 {
-	val = ((val << 8) & 0xFF00FF00) | ((val >> 8) & 0xFF00FF);
-	return (val << 16) | (val >> 16);
+	netlib_byte_buf* buf = NULL;
+	int error = 1;
+	buf = (netlib_byte_buf*) malloc(sizeof(netlib_byte_buf));
+
+	if (buf)
+	{
+		buf->length = size;
+		buf->data = (uint8_t*) malloc(size);
+		buf->read_pos = 0;
+		buf->write_pos = 0;
+		if (buf->data)
+			error = 0;
+	}
+
+	if (error)
+	{
+		netlib_set_error("Out of memory");
+		netlib_free_byte_buf(buf);
+		buf = NULL;
+	}
+
+	return buf;
+}
+
+void netlib_free_byte_buf(netlib_byte_buf* buf)
+{
+	if (buf)
+	{
+		free(buf->data);
+		free(buf);
+	}
+}
+
+int netlib_write_uint8_t(netlib_byte_buf* buf, uint8_t val)
+{
+	if (!buf)
+	{
+		return -1;
+	}
+
+	if (buf->write_pos + sizeof(uint8_t) > buf->length)
+	{
+		netlib_set_error("Not enough space in byte data");
+		return -1;
+	}
+
+	buf->data[buf->write_pos++] = val;
+	return 1;
+}
+
+int netlib_write_uint16_t(netlib_byte_buf* buf, uint16_t val)
+{
+	if (!buf)
+	{
+		return -1;
+	}
+
+	if (buf->write_pos + sizeof(uint16_t) > buf->length)
+	{
+		netlib_set_error("Not enough space in byte data");
+		return -1;
+	}
+
+	buf->data[buf->write_pos++] = (val >> 8) & 0xff;
+	buf->data[buf->write_pos++] = val & 0xff;
+	return 1;
+}
+
+int netlib_write_uint32_t(netlib_byte_buf* buf, uint32_t val)
+{
+	if (!buf)
+	{
+		return -1;
+	}
+
+	if (buf->write_pos + sizeof(uint32_t) > buf->length)
+	{
+		netlib_set_error("Not enough space in byte data");
+		return -1;
+	}
+
+	buf->data[buf->write_pos++] = (uint8_t) (val >> 24) & 0xff;
+	buf->data[buf->write_pos++] = (uint8_t) (val >> 16) & 0xff;
+	buf->data[buf->write_pos++] = (uint8_t) (val >> 8) & 0xff;
+	buf->data[buf->write_pos++] = (uint8_t) val & 0xff;
+
+	return 1;
+}
+
+int netlib_read_uint8_t(netlib_byte_buf* buf, uint8_t* val)
+{
+	if (!buf)
+	{
+		return -1;
+	}
+
+	if (buf->read_pos + sizeof(uint8_t) > buf->length)
+	{
+		netlib_set_error("Not enough space in byte data");
+		return -1;
+	}
+
+	*val = buf->data[buf->read_pos++];
+	return 1;
+}
+
+int netlib_read_uint16_t(netlib_byte_buf* buf, uint16_t* val)
+{
+	if (!buf)
+	{
+		return -1;
+	}
+
+	if (buf->read_pos + sizeof(uint16_t) > buf->length)
+	{
+		netlib_set_error("Not enough space in byte data");
+		return -1;
+	}
+
+	*val = (buf->data[buf->read_pos++] << 8);
+	*val |= buf->data[buf->read_pos++] & 0xff;
+
+	return 1;
+}
+
+int netlib_read_uint32_t(netlib_byte_buf* buf, uint32_t* val)
+{
+	if (!buf)
+	{
+		return -1;
+	}
+
+	if (buf->write_pos + sizeof(uint32_t) > buf->length)
+	{
+		netlib_set_error("Not enough space in byte data");
+		return -1;
+	}
+
+	*val = 0;
+	*val = buf->data[buf->write_pos++] << 24;
+	*val |= buf->data[buf->write_pos++] << 16;
+	*val |= buf->data[buf->write_pos++] << 8;
+	*val |= buf->data[buf->write_pos++] & 0xff;
+	
+	return 1;
 }
 
 int netlib_init(void)
@@ -152,7 +295,7 @@ int netlib_resolve_host(ip_address* address, const char* host, uint16_t port)
 
 /* Resolve an ip address to a host name in canonical form.
    If the ip couldn't be resolved, this function returns NULL,
-   otherwise a pointer to a static buffer containing the hostname
+   otherwise a pointer to a static data containing the hostname
    is returned.  Note that this function is not thread-safe.
 
    Written by Miguel Angel Blanch.
