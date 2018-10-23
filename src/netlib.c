@@ -138,10 +138,17 @@ int netlib_write_uint32_t(netlib_byte_buf* buf, uint32_t val)
 		return -1;
 	}
 
+	int pos = buf->write_pos;
 	buf->data[buf->write_pos++] = (uint8_t) (val >> 24) & 0xff;
 	buf->data[buf->write_pos++] = (uint8_t) (val >> 16) & 0xff;
 	buf->data[buf->write_pos++] = (uint8_t) (val >> 8) & 0xff;
 	buf->data[buf->write_pos++] = (uint8_t) val & 0xff;
+
+	printf("data: 0x%X\n", val);
+	printf("data[%i]: 0x%X\n", pos++, (val >> 24) & 0xff);
+	printf("data[%i]: 0x%X\n", pos++, (val >> 16) & 0xff);
+	printf("data[%i]: 0x%X\n", pos++, (val >> 8) & 0xff);
+	printf("data[%i]: 0x%X\n", pos, val & 0xff);
 
 	return 1;
 }
@@ -194,13 +201,13 @@ int netlib_read_uint32_t(netlib_byte_buf* buf, uint32_t* val)
 		netlib_set_error("Not enough space in byte data");
 		return -1;
 	}
-
-	*val = 0;
-	*val = buf->data[buf->write_pos++] << 24;
-	*val |= buf->data[buf->write_pos++] << 16;
-	*val |= buf->data[buf->write_pos++] << 8;
-	*val |= buf->data[buf->write_pos++] & 0xff;
 	
+	*val = 0;
+	*val = buf->data[buf->read_pos++] << 24;
+	*val |= buf->data[buf->read_pos++] << 16;
+	*val |= buf->data[buf->read_pos++] << 8;
+	*val |= buf->data[buf->read_pos++] & 0xff;
+
 	return 1;
 }
 
