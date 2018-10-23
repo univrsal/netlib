@@ -31,7 +31,7 @@ typedef struct netlib_version
 
 /* Printable format: "%d.%d.%d", MAJOR, MINOR, PATCHLEVEL */
 #define NETLIB_MAJOR_VERSION   0
-#define NETLIB_MINOR_VERSION   1
+#define NETLIB_MINOR_VERSION   2
 #define NETLIB_PATHLEVEL	   0
 
 /* This macro can be used to fill a version structure with the compile-time
