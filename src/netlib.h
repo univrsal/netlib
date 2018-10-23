@@ -393,19 +393,32 @@ extern DECLSPEC int NETLIB_CALL netlib_tcp_recv_buf(tcp_socket sock, netlib_byte
 
 /* === Writing to a data === */
 
-extern DECLSPEC int NETLIB_CALL netlib_write_uint8_t(netlib_byte_buf* buf, uint8_t val);
+extern DECLSPEC int NETLIB_CALL netlib_write_uint8(netlib_byte_buf* buf, uint8_t val);
 
-extern DECLSPEC int NETLIB_CALL netlib_write_uint16_t(netlib_byte_buf* buf, uint16_t val);
+extern DECLSPEC int NETLIB_CALL netlib_write_uint16(netlib_byte_buf* buf, uint16_t val);
 
-extern DECLSPEC int NETLIB_CALL netlib_write_uint32_t(netlib_byte_buf* buf, uint32_t val);
+extern DECLSPEC int NETLIB_CALL netlib_write_uint32(netlib_byte_buf* buf, uint32_t val);
+
+#define netlib_write_int8(buf, val) netlib_write_uint8(buf, (uint8_t) val)
+
+#define netlib_write_int16(buf, val) netlib_write_uint16(buf, (uint16_t) val)
+
+#define netlib_write_int32(buf, val) netlib_write_uint32(buf, (uint32_t) val)
 
 /* === Reading from a data === */
 
-extern DECLSPEC int NETLIB_CALL netlib_read_uint8_t(netlib_byte_buf* buf, uint8_t* val);
+extern DECLSPEC int NETLIB_CALL netlib_read_uint8(netlib_byte_buf* buf, uint8_t* val);
 
-extern DECLSPEC int NETLIB_CALL netlib_read_uint16_t(netlib_byte_buf* buf, uint16_t* val);
+extern DECLSPEC int NETLIB_CALL netlib_read_uint16(netlib_byte_buf* buf, uint16_t* val);
 
-extern DECLSPEC int NETLIB_CALL netlib_read_uint32_t(netlib_byte_buf* buf, uint32_t* val);
+extern DECLSPEC int NETLIB_CALL netlib_read_uint32(netlib_byte_buf* buf, uint32_t* val);
+
+#define netlib_read_int8(buf, val) netlib_read_uint8(buf, (uint8_t*) val)
+
+#define netlib_read_int16(buf, val) netlib_read_uint16(buf, (uint16_t*) val)
+
+#define netlib_read_int32(buf, val) netlib_read_uint32(buf, (uint32_t*) val)
+
 #ifdef __cplusplus
 }
 #endif

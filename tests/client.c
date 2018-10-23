@@ -82,53 +82,19 @@ int main(int argc, char **argv)
 		exit(4);
 	}
 
-	netlib_byte_buf* buf = netlib_alloc_byte_buf(12);
+	netlib_byte_buf* buf = netlib_alloc_byte_buf(16);
 
-	if (!netlib_write_uint16_t(buf, 137))
-	{
-		printf("netlib_write_uint16_t: %s\n", netlib_get_error());
-	}
+	netlib_write_uint32(buf, UINT32_MAX);
+	netlib_write_uint32(buf, 0);
+	netlib_write_int32(buf, INT32_MAX);
+	netlib_write_int32(buf, INT32_MIN);
 
-	if (!netlib_write_uint16_t(buf, 64000))
-	{
-		printf("netlib_write_uint16_t: %s\n", netlib_get_error());
-	}
-
-	uint32_t val = 77777780;
-	printf("Sending uint32_t 0x%X\n", val);
-	if (!netlib_write_uint32_t(buf, val))
-	{
-		printf("netlib_write_uint16_t: %s\n", netlib_get_error());
-	}
-
-	len = netlib_tcp_send(sock, buf->data, buf->length);
-
-	if (len < buf->length)
+	if (netlib_tcp_send_buf(sock, buf) < buf->length)
 	{
 		printf("netlib_tcp_send: %s\n", netlib_get_error());
 	}
 
 	netlib_free_byte_buf(buf);
-
-	/* read the data from stdin */
-	//printf("Enter Message, or Q to make the server quit:\n");
-	//fgets(message, 1024, stdin);
-	//len = strlen(message);
-
-	///* strip the newline */
-	//message[len - 1] = '\0';
-
-	//if (len)
-	//{
-	//	int result;
-
-	//	/* print out the message */
-	//	printf("Sending: %.*s\n", len, message);
-
-	//	result = netlib_tcp_send(sock, message, len); /* add 1 for the NULL */
-	//	if (result<len)
-	//		printf("netlib_tcp_send: %s\n", netlib_get_error());
-	//}
 
 	netlib_tcp_close(sock);
 

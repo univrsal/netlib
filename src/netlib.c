@@ -90,7 +90,7 @@ void netlib_free_byte_buf(netlib_byte_buf* buf)
 	}
 }
 
-int netlib_write_uint8_t(netlib_byte_buf* buf, uint8_t val)
+int netlib_write_uint8(netlib_byte_buf* buf, uint8_t val)
 {
 	if (!buf)
 	{
@@ -107,7 +107,7 @@ int netlib_write_uint8_t(netlib_byte_buf* buf, uint8_t val)
 	return 1;
 }
 
-int netlib_write_uint16_t(netlib_byte_buf* buf, uint16_t val)
+int netlib_write_uint16(netlib_byte_buf* buf, uint16_t val)
 {
 	if (!buf)
 	{
@@ -125,7 +125,7 @@ int netlib_write_uint16_t(netlib_byte_buf* buf, uint16_t val)
 	return 1;
 }
 
-int netlib_write_uint32_t(netlib_byte_buf* buf, uint32_t val)
+int netlib_write_uint32(netlib_byte_buf* buf, uint32_t val)
 {
 	if (!buf)
 	{
@@ -146,7 +146,7 @@ int netlib_write_uint32_t(netlib_byte_buf* buf, uint32_t val)
 	return 1;
 }
 
-int netlib_read_uint8_t(netlib_byte_buf* buf, uint8_t* val)
+int netlib_read_uint8(netlib_byte_buf* buf, uint8_t* val)
 {
 	if (!buf)
 	{
@@ -163,7 +163,7 @@ int netlib_read_uint8_t(netlib_byte_buf* buf, uint8_t* val)
 	return 1;
 }
 
-int netlib_read_uint16_t(netlib_byte_buf* buf, uint16_t* val)
+int netlib_read_uint16(netlib_byte_buf* buf, uint16_t* val)
 {
 	if (!buf)
 	{
@@ -182,7 +182,7 @@ int netlib_read_uint16_t(netlib_byte_buf* buf, uint16_t* val)
 	return 1;
 }
 
-int netlib_read_uint32_t(netlib_byte_buf* buf, uint32_t* val)
+int netlib_read_uint32(netlib_byte_buf* buf, uint32_t* val)
 {
 	if (!buf)
 	{
