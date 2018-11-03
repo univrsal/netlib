@@ -82,12 +82,13 @@ int main(int argc, char **argv)
 		exit(4);
 	}
 
-	netlib_byte_buf* buf = netlib_alloc_byte_buf(16);
+	netlib_byte_buf* buf = netlib_alloc_byte_buf(20);
 
 	netlib_write_uint32(buf, UINT32_MAX);
 	netlib_write_uint32(buf, 0);
 	netlib_write_int32(buf, INT32_MAX);
 	netlib_write_int32(buf, INT32_MIN);
+	netlib_write_float(buf, 1.337f);
 
 	if (netlib_tcp_send_buf(sock, buf) < buf->length)
 	{

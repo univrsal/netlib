@@ -98,7 +98,7 @@ int main(int argc, char **argv)
 			remoteip->port);
 
 		/* read the data from client */
-		netlib_byte_buf* buf = netlib_alloc_byte_buf(16);
+		netlib_byte_buf* buf = netlib_alloc_byte_buf(20);
 
 		if (!buf)
 		{
@@ -117,12 +117,15 @@ int main(int argc, char **argv)
 		/* Recieve data over byte buffer */
 		uint32_t a, b;
 		int32_t c, d;
+		float f = 0.f;
+
 		netlib_read_uint32(buf, &a);
 		netlib_read_uint32(buf, &b);
 		netlib_read_int32(buf, &c);
 		netlib_read_int32(buf, &d);
+		netlib_read_float(buf, &f);
 
-		printf("Received: %u %u %i %i\n", a, b, c, d);
+		printf("Received: %u %u %i %i %f\n", a, b, c, d, f);
 		netlib_free_byte_buf(buf);
 
 		if (message[0] == 'Q')

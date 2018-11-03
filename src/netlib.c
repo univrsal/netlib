@@ -146,6 +146,30 @@ int netlib_write_uint32(netlib_byte_buf* buf, uint32_t val)
 	return 1;
 }
 
+int netlib_write_float(netlib_byte_buf* buf, float val)
+{
+	if (!buf)
+	{
+		return -1;
+	}
+
+	if (buf->write_pos + sizeof(float) > buf->length)
+	{
+		netlib_set_error("Not enough space in byte data");
+		return -1;
+	}
+	
+	union {
+		float f;
+		unsigned char bytes[sizeof(float)];
+	} float2byte;
+	
+	float2byte.f = val;
+	memcpy(buf->data + buf->write_pos, float2byte.bytes, sizeof(float));
+	buf->write_pos += sizeof(float);
+	return 1;
+}
+
 int netlib_read_uint8(netlib_byte_buf* buf, uint8_t* val)
 {
 	if (!buf)
@@ -200,6 +224,31 @@ int netlib_read_uint32(netlib_byte_buf* buf, uint32_t* val)
 	*val |= buf->data[buf->read_pos++] << 16;
 	*val |= buf->data[buf->read_pos++] << 8;
 	*val |= buf->data[buf->read_pos++] & 0xff;
+
+	return 1;
+}
+
+int netlib_read_float(netlib_byte_buf* buf, float* val)
+{
+	if (!buf)
+	{
+		return -1;
+	}
+
+	if (buf->write_pos + sizeof(float) > buf->length)
+	{
+		netlib_set_error("Not enough space in byte data");
+		return -1;
+	}
+
+	union {
+		unsigned char bytes[sizeof(float)];
+		float f;
+	} float2byte;
+
+	memcpy(float2byte.bytes, buf->data + buf->read_pos, sizeof(float));
+	*val = float2byte.f;
+	buf->read_pos += sizeof(float);
 
 	return 1;
 }
