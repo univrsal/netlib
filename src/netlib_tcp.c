@@ -297,6 +297,13 @@ int netlib_tcp_send_buf(tcp_socket sock, netlib_byte_buf* buf)
 	return netlib_tcp_send(sock, buf->data, buf->length);
 }
 
+int netlib_tcp_send_buf_smart(tcp_socket sock, netlib_byte_buf* buf)
+{
+    if (!buf)
+        return -1;
+    return netlib_tcp_send(sock, buf->data, buf->write_pos);
+}
+
 int netlib_tcp_recv_buf(tcp_socket sock, netlib_byte_buf* buf)
 {
 	if (!buf)
