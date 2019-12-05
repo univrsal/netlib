@@ -14,6 +14,9 @@
 
 #include "platform.h"
 #include "netlib.h"
+#ifdef UNIX
+#include <unistd.h>
+#endif
 
 /* The network API for TCP sockets */
 
