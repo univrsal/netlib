@@ -22,9 +22,9 @@
 
 #include <errno.h>
 
-#ifdef WINDOWS
+#if defined(_WIN32) || defined(_WIN64)
 #define __USE_W32_SOCKETS
-#ifdef WIN64
+#ifdef _WIN64
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #else

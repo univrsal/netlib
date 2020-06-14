@@ -1,43 +1,88 @@
-project(networklibrary)
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.7)
+project(networklibrary VERSION 1.0.1 LANGUAGES C)
+
+
+option(ENABLE_TESTS "Compile test binaries (default: ON)" ON)
+option(ENABLE_STATIC "Compile static library (default: OFF)" OFF)
+option(ENABLE_SHARED "Compile shared library (default: ON)" ON)
 
 if(MSVC)
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
         set(netlib_PLATFORM_DEPS
             ws2_32
             iphlpapi)
-        add_definitions(-DWIN64=1)
     elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
         set(netlib_PLATFORM_DEPS
             wsock32
             iphlpapi)
-        add_definitions(-DWIN32=1)
     endif()
-
-    add_definitions(-DWINDOWS=1)
-elseif(UNIX)
-    add_definitions(-DUNIX=1)
 endif()
 
-set(NETLIB_SRC
-    src/netlib.c
-    src/netlib.h
-    src/netlib_tcp.c
-    src/netlib_udp.c
-    src/netlib_select.c
-    src/platform.h
-    src/util.h)
+add_library(netlib OBJECT
+    ./src/netlib.c
+    ./src/netlib_tcp.c
+    ./src/netlib_udp.c
+    ./src/netlib_select.c
+    ./src/platform.h
+)
 
-add_library("netlib" SHARED ${NETLIB_SRC})
-target_include_directories("netlib" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
+target_include_directories(netlib
+    PUBLIC
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+if (ENABLE_SHARED)
+    add_library(shared SHARED $<TARGET_OBJECTS:netlib>)
+    set_target_properties(shared PROPERTIES OUTPUT_NAME netlib)
+    install(TARGETS shared DESTINATION ${CMAKE_INSTALL_LIBDIR})
+endif()
+
+if (ENABLE_STATIC)
+    add_library(static STATIC $<TARGET_OBJECTS:netlib>)
+    set_target_properties(static PROPERTIES OUTPUT_NAME netlib)
+    install(TARGETS static DESTINATION ${CMAKE_INSTALL_LIBDIR})
+endif()
+
+if (ENABLE_SHARED OR ENABLE_STATIC)
+    install(FILES ./include/netlib.h
+        DESTINATION include)
+endif()
+
+set_property(TARGET netlib PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 target_link_libraries(netlib
     ${netlib_PLATFORM_DEPS})
 
 # Tests
-add_executable("netlib_client" "tests/client.c")
-add_dependencies("netlib_client" "netlib")
-target_link_libraries("netlib_client" "netlib")
-add_executable("netlib_server" "tests/server.c")
-add_dependencies("netlib_server" "netlib")
-target_link_libraries("netlib_server" "netlib")
+
+if (ENABLE_TESTS)
+    add_executable(netlib_client "tests/client.c")
+    add_executable(netlib_server "tests/server.c")
+
+    if (ENABLE_STATIC)
+        add_dependencies(netlib_client static)
+        target_link_libraries(netlib_client static)
+        add_dependencies(netlib_server static)
+        target_link_libraries(netlib_server static)
+    elseif (ENABLE_SHARED)
+        add_dependencies(netlib_client shared)
+        target_link_libraries(netlib_client shared)
+        add_dependencies(netlib_server shared)
+        target_link_libraries(netlib_server shared)
+    else()
+        add_dependencies(netlib_client netlib)
+        target_link_libraries(netlib_client netlib)
+        add_dependencies(netlib_server netlib)
+        target_link_libraries(netlib_server netlib)
+    endif()
+
+    install(TARGETS netlib_client netlib_server DESTINATION bin)
+endif()
+
+include_directories(./include)
+
+set_target_properties(netlib PROPERTIES VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR})
