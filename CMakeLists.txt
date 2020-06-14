@@ -82,6 +82,14 @@ if (ENABLE_TESTS)
     install(TARGETS netlib_client netlib_server DESTINATION bin)
 endif()
 
+
+if (UNIX)
+    configure_file("./pc/netlib.pc.in"
+        "${PROJECT_BINARY_DIR}/${CMAKE_PROJECT_NAME}.pc" @ONLY)
+    install(FILES "${PROJECT_BINARY_DIR}/${CMAKE_PROJECT_NAME}.pc" DESTINATION
+        "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+endif()
+
 include_directories(./include)
 
 set_target_properties(netlib PROPERTIES VERSION ${PROJECT_VERSION}
