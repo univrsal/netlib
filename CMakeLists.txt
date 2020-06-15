@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.7)
-project(networklibrary VERSION 1.0.1 LANGUAGES C)
-
+project(netlib VERSION 1.0.1 LANGUAGES C)
 
 option(ENABLE_TESTS "Compile test binaries (default: ON)" ON)
 option(ENABLE_STATIC "Compile static library (default: OFF)" OFF)
@@ -26,6 +25,8 @@ add_library(netlib OBJECT
     ./src/platform.h
 )
 
+set_property(TARGET netlib PROPERTY POSITION_INDEPENDENT_CODE 1)
+
 target_include_directories(netlib
     PUBLIC
         $<INSTALL_INTERFACE:include>
@@ -33,6 +34,8 @@ target_include_directories(netlib
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
+
+include(GNUInstallDirs)
 
 if (ENABLE_SHARED)
     add_library(shared SHARED $<TARGET_OBJECTS:netlib>)
@@ -51,7 +54,6 @@ if (ENABLE_SHARED OR ENABLE_STATIC)
         DESTINATION include)
 endif()
 
-set_property(TARGET netlib PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 target_link_libraries(netlib
     ${netlib_PLATFORM_DEPS})

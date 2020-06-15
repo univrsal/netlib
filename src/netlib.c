@@ -42,7 +42,7 @@ void netlib_set_last_error(int err)
 
 static char errorbuf[1024];
 
-void NETLIB_CALL netlib_set_error(const char* fmt, ...)
+void netlib_set_error(const char* fmt, ...)
 {
     va_list argp;
     va_start(argp, fmt);
@@ -50,12 +50,12 @@ void NETLIB_CALL netlib_set_error(const char* fmt, ...)
     va_end(argp);
 }
 
-const char* NETLIB_CALL netlib_get_error()
+const char* netlib_get_error()
 {
     return errorbuf;
 }
 
-DECLSPEC netlib_byte_buf* NETLIB_CALL netlib_alloc_byte_buf(uint8_t size)
+netlib_byte_buf* netlib_alloc_byte_buf(uint8_t size)
 {
     netlib_byte_buf* buf = NULL;
     int error = 1;

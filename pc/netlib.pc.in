@@ -6,5 +6,5 @@ includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
 Name: netlib 
 Description: SDL_net without depending on SDL 
 Version: @PROJECT_VERSION@
-Libs: @COMPILE_LIBRARIES@ -L${libdir} -lgamepad
+Libs: @COMPILE_LIBRARIES@ -L${libdir} -lnetlib
 Cflags: -I${includedir}

@@ -17,13 +17,11 @@
 
 #include <stdint.h>
 
-#if defined(_WIN32) || defined(_WIN64)
-#define DECLSPEC __declspec(dllexport)
-#define NETLIB_CALL __cdecl
+#ifdef _MSC_VER
+#define EXPORT __declspec(dllexport)
 #define FORCE_INLINE __forceinline
 #else
-#define DECLSPEC
-#define NETLIB_CALL
+#define EXPORT
 #define FORCE_INLINE __attribute__((always_inline)) static __inline__
 #endif
 
@@ -61,11 +59,11 @@ typedef struct netlib_version
    it should NOT be used to fill a version structure, instead you should
    use the NETLIB_VERSION() macro.
 */
-extern DECLSPEC const netlib_version* NETLIB_CALL netlib_get_version(void);
+EXPORT const netlib_version* netlib_get_version(void);
 
 /* Setup and close method. Call before other usage */
-extern DECLSPEC int  NETLIB_CALL netlib_init(void);
-extern DECLSPEC void NETLIB_CALL netlib_quit(void);
+EXPORT int  netlib_init(void);
+EXPORT void netlib_quit(void);
 
 typedef struct
 {
@@ -92,19 +90,19 @@ typedef struct
    address will be INADDR_NONE, and the function will return -1.
    If 'host' is NULL, the resolved host will be set to INADDR_ANY.
 */
-extern DECLSPEC int NETLIB_CALL netlib_resolve_host(ip_address* address, const char* host, uint16_t port);
+EXPORT int netlib_resolve_host(ip_address* address, const char* host, uint16_t port);
 
 /* Resolve an ip address to a host name in canonical form.
    If the ip couldn't be resolved, this function returns NULL,
    otherwise a pointer to a static data containing the hostname
    is returned.  Note that this function is not thread-safe.
 */
-extern DECLSPEC const char * NETLIB_CALL netlib_resolve_ip(const ip_address* ip);
+EXPORT const char * netlib_resolve_ip(const ip_address* ip);
 
 /* Get the addresses of network interfaces on this system.
    This returns the number of addresses saved in 'addresses'
 */
-extern DECLSPEC int NETLIB_CALL netlib_get_local_addresses(ip_address* addresses, int maxcount);
+EXPORT int netlib_get_local_addresses(ip_address* addresses, int maxcount);
 
 /* === TCP API === */
 
@@ -118,24 +116,24 @@ typedef struct _tcp_socket *tcp_socket;
    netlib_resolve_host() are already in the correct form).
    The newly created socket is returned, or NULL if there was an error.
 */
-extern DECLSPEC tcp_socket NETLIB_CALL netlib_tcp_open(ip_address* ip);
+EXPORT tcp_socket netlib_tcp_open(ip_address* ip);
 
 /* Accept an incoming connection on the given server socket.
    The newly created socket is returned, or NULL if there was an error.
 */
-extern DECLSPEC tcp_socket NETLIB_CALL netlib_tcp_accept(tcp_socket server);
+EXPORT tcp_socket netlib_tcp_accept(tcp_socket server);
 
 /* Get the IP address of the remote system associated with the socket.
    If the socket is a server socket, this function returns NULL.
 */
-extern DECLSPEC ip_address* NETLIB_CALL netlib_tcp_get_peer_address(tcp_socket sock);
+EXPORT ip_address* netlib_tcp_get_peer_address(tcp_socket sock);
 
 /* Send 'len' bytes of 'data' over the non-server socket 'sock'
    This function returns the actual amount of data sent.  If the return value
    is less than the amount of data sent, then either the remote connection was
    closed, or an unknown socket error occurred.
 */
-extern DECLSPEC int NETLIB_CALL netlib_tcp_send(tcp_socket sock, const void* data, int len);
+EXPORT int netlib_tcp_send(tcp_socket sock, const void* data, int len);
 
 /* Receive up to 'maxlen' bytes of data over the non-server socket 'sock',
    and store them in the data pointed to by 'data'.
@@ -143,10 +141,10 @@ extern DECLSPEC int NETLIB_CALL netlib_tcp_send(tcp_socket sock, const void* dat
    value is less than or equal to zero, then either the remote connection was
    closed, or an unknown socket error occurred.
 */
-extern DECLSPEC int NETLIB_CALL netlib_tcp_recv(tcp_socket sock, void* data, int maxlen);
+EXPORT int netlib_tcp_recv(tcp_socket sock, void* data, int maxlen);
 
 /* Close a TCP network socket */
-extern DECLSPEC void NETLIB_CALL netlib_tcp_close(tcp_socket sock);
+EXPORT void netlib_tcp_close(tcp_socket sock);
 
 /* === UDP API === */
 
@@ -170,17 +168,17 @@ typedef struct
 /* Allocate/resize/free a single UDP packet 'length' bytes long.
    The new packet is returned, or NULL if the function ran out of memory.
 */
-extern DECLSPEC udp_packet* NETLIB_CALL netlib_alloc_packet(int size);
-extern DECLSPEC int NETLIB_CALL netlib_resize_packet(udp_packet* packet, int newsize);
-extern DECLSPEC void NETLIB_CALL netlib_free_packet(udp_packet* packet);
+EXPORT udp_packet* netlib_alloc_packet(int size);
+EXPORT int netlib_resize_packet(udp_packet* packet, int newsize);
+EXPORT void netlib_free_packet(udp_packet* packet);
 
 /* Allocate/Free a UDP packet vector (array of packets) of 'howmany' packets,
    each 'length' bytes long.
    A pointer to the first packet in the array is returned, or NULL if the
    function ran out of memory.
 */
-extern DECLSPEC udp_packet ** NETLIB_CALL netlib_alloc_packets(int howmany, int size);
-extern DECLSPEC void NETLIB_CALL netlib_free_packets(udp_packet** packets);
+EXPORT udp_packet ** netlib_alloc_packets(int howmany, int size);
+EXPORT void netlib_free_packets(udp_packet** packets);
 
 /* Open a UDP network socket
    If 'port' is non-zero, the UDP socket is bound to a local port.
@@ -188,10 +186,10 @@ extern DECLSPEC void NETLIB_CALL netlib_free_packets(udp_packet** packets);
    internally in network (big endian) byte order, in addresses, etc.
    This allows other systems to send to this socket via a known port.
 */
-extern DECLSPEC udp_socket NETLIB_CALL netlib_udp_open(uint16_t port);
+EXPORT udp_socket netlib_udp_open(uint16_t port);
 
 /* Set the percentage of simulated packet loss for packets sent on the socket. */
-extern DECLSPEC void NETLIB_CALL netlib_udp_set_packet_loss(udp_socket sock, int percent);
+EXPORT void netlib_udp_set_packet_loss(udp_socket sock, int percent);
 
 /* Bind the address 'address' to the requested channel on the UDP socket.
    If the channel is -1, then the first unbound channel that has not yet
@@ -203,10 +201,10 @@ extern DECLSPEC void NETLIB_CALL netlib_udp_set_packet_loss(udp_socket sock, int
    address, to which all outbound packets on the channel are sent.
    This function returns the channel which was bound, or -1 on error.
 */
-extern DECLSPEC int NETLIB_CALL netlib_udp_bind(udp_socket sock, int channel, const ip_address* address);
+EXPORT int netlib_udp_bind(udp_socket sock, int channel, const ip_address* address);
 
 /* Unbind all addresses from the given channel */
-extern DECLSPEC void NETLIB_CALL netlib_udp_unbind(udp_socket sock, int channel);
+EXPORT void netlib_udp_unbind(udp_socket sock, int channel);
 
 /* Get the primary IP address of the remote system associated with the
    socket and channel.  If the channel is -1, then the primary IP port
@@ -214,7 +212,7 @@ extern DECLSPEC void NETLIB_CALL netlib_udp_unbind(udp_socket sock, int channel)
    opened with a specific port.
    If the channel is not bound and not -1, this function returns NULL.
 */
-extern DECLSPEC ip_address* NETLIB_CALL netlib_udp_get_peer_address(udp_socket sock, int channel);
+EXPORT ip_address* netlib_udp_get_peer_address(udp_socket sock, int channel);
 
 /* Send a vector of packets to the the channels specified within the packet.
    If the channel specified in the packet is -1, the packet will be sent to
@@ -223,7 +221,7 @@ extern DECLSPEC ip_address* NETLIB_CALL netlib_udp_get_peer_address(udp_socket s
    been sent, -1 if the packet send failed.
    This function returns the number of packets sent.
 */
-extern DECLSPEC int NETLIB_CALL netlib_udp_send_packets(udp_socket sock, udp_packet** packets, int npackets);
+EXPORT int netlib_udp_send_packets(udp_socket sock, udp_packet** packets, int npackets);
 
 /* Send a single packet to the specified channel.
    If the channel specified in the packet is -1, the packet will be sent to
@@ -237,7 +235,7 @@ extern DECLSPEC int NETLIB_CALL netlib_udp_send_packets(udp_socket sock, udp_pac
    of the transport medium.  It can be as low as 250 bytes for some PPP links,
    and as high as 1500 bytes for ethernet.
 */
-extern DECLSPEC int NETLIB_CALL netlib_udp_send(udp_socket sock, int channel, udp_packet* packet);
+EXPORT int netlib_udp_send(udp_socket sock, int channel, udp_packet* packet);
 
 /* Receive a vector of pending packets from the UDP socket.
    The returned packets contain the source address and the channel they arrived
@@ -249,7 +247,7 @@ extern DECLSPEC int NETLIB_CALL netlib_udp_send(udp_socket sock, int channel, ud
    This function returns the number of packets read from the network, or -1
    on error.  This function does not block, so can return 0 packets pending.
 */
-extern DECLSPEC int NETLIB_CALL netlib_udp_recv_packets(udp_socket sock, udp_packet** packets);
+EXPORT int netlib_udp_recv_packets(udp_socket sock, udp_packet** packets);
 
 /* Receive a single packet from the UDP socket.
    The returned packet contains the source address and the channel it arrived
@@ -261,10 +259,10 @@ extern DECLSPEC int NETLIB_CALL netlib_udp_recv_packets(udp_socket sock, udp_pac
    This function returns the number of packets read from the network, or -1
    on error.  This function does not block, so can return 0 packets pending.
 */
-extern DECLSPEC int NETLIB_CALL netlib_udp_recv(udp_socket sock, udp_packet* packet);
+EXPORT int netlib_udp_recv(udp_socket sock, udp_packet* packet);
 
 /* Close a UDP network socket */
-extern DECLSPEC void NETLIB_CALL netlib_udp_close(udp_socket sock);
+EXPORT void netlib_udp_close(udp_socket sock);
 
 /* === Hooks === */
 
@@ -280,10 +278,10 @@ typedef struct _netlib_generic_socket
    This returns a socket set for up to 'maxsockets' sockets, or NULL if
    the function ran out of memory.
 */
-extern DECLSPEC netlib_socket_set NETLIB_CALL netlib_alloc_socket_set(int maxsockets);
+EXPORT netlib_socket_set netlib_alloc_socket_set(int maxsockets);
 
 /* Add a socket to a set of sockets to be checked for available data */
-extern DECLSPEC int NETLIB_CALL netlib_add_socket(netlib_socket_set set, netlib_generic_socket sock);
+EXPORT int netlib_add_socket(netlib_socket_set set, netlib_generic_socket sock);
 
 FORCE_INLINE int netlib_tcp_add_socket(netlib_socket_set set, tcp_socket sock)
 {
@@ -296,7 +294,7 @@ FORCE_INLINE int netlib_udp_add_socket(netlib_socket_set set, udp_socket sock)
 }
 
 /* Remove a socket from a set of sockets to be checked for available data */
-extern DECLSPEC int NETLIB_CALL netlib_del_socket(netlib_socket_set set, netlib_generic_socket sock);
+EXPORT int netlib_del_socket(netlib_socket_set set, netlib_generic_socket sock);
 
 FORCE_INLINE int netlib_tcp_del_socket(netlib_socket_set set, tcp_socket sock)
 {
@@ -315,7 +313,7 @@ FORCE_INLINE int netlib_udp_del_socket(netlib_socket_set set, udp_socket sock)
    first.  This function returns the number of sockets ready for reading,
    or -1 if there was an error with the select() system call.
 */
-extern DECLSPEC int NETLIB_CALL netlib_check_socket_set(netlib_socket_set set, uint32_t timeout);
+EXPORT int netlib_check_socket_set(netlib_socket_set set, uint32_t timeout);
 
 /* After calling netlib_check_socket_set(), you can use this function on a
    socket that was in the socket set, to find out if data is available
@@ -330,12 +328,12 @@ FORCE_INLINE int _netlib_socket_ready(netlib_generic_socket sock)
 }
 
 /* Free a set of sockets allocated by netlib_alloc_socket_set() */
-extern DECLSPEC void NETLIB_CALL netlib_free_socket_set(netlib_socket_set set);
+EXPORT void netlib_free_socket_set(netlib_socket_set set);
 
 /* === Error reporting === */
 
-extern DECLSPEC void NETLIB_CALL netlib_set_error(const char *fmt, ...);
-extern DECLSPEC const char* NETLIB_CALL netlib_get_error(void);
+EXPORT void netlib_set_error(const char *fmt, ...);
+EXPORT const char* netlib_get_error(void);
 
 /* === Functions to read/write network data */
 
@@ -396,27 +394,27 @@ typedef struct
     uint8_t write_pos;
 } netlib_byte_buf;
 
-extern DECLSPEC netlib_byte_buf* NETLIB_CALL netlib_alloc_byte_buf(uint8_t size);
+EXPORT netlib_byte_buf* netlib_alloc_byte_buf(uint8_t size);
 
-extern DECLSPEC void NETLIB_CALL netlib_free_byte_buf(netlib_byte_buf* buf);
+EXPORT void netlib_free_byte_buf(netlib_byte_buf* buf);
 
-extern DECLSPEC int NETLIB_CALL netlib_tcp_send_buf(tcp_socket sock, netlib_byte_buf* buf);
+EXPORT int netlib_tcp_send_buf(tcp_socket sock, netlib_byte_buf* buf);
 
 /* Only sends bytes up to write_pos */
-extern DECLSPEC int NETLIB_CALL netlib_tcp_send_buf_smart(tcp_socket sock, netlib_byte_buf* buf);
+EXPORT int netlib_tcp_send_buf_smart(tcp_socket sock, netlib_byte_buf* buf);
 
 /* Returns amount of bytes received, might be lesser than length of buffer
  * if netlib_tcp_send_buf_smart was used
  */
-extern DECLSPEC int NETLIB_CALL netlib_tcp_recv_buf(tcp_socket sock, netlib_byte_buf* buf);
+EXPORT int netlib_tcp_recv_buf(tcp_socket sock, netlib_byte_buf* buf);
 
 /* === Writing to a data === */
 
-extern DECLSPEC int NETLIB_CALL netlib_write_uint8(netlib_byte_buf* buf, uint8_t val);
+EXPORT int netlib_write_uint8(netlib_byte_buf* buf, uint8_t val);
 
-extern DECLSPEC int NETLIB_CALL netlib_write_uint16(netlib_byte_buf* buf, uint16_t val);
+EXPORT int netlib_write_uint16(netlib_byte_buf* buf, uint16_t val);
 
-extern DECLSPEC int NETLIB_CALL netlib_write_uint32(netlib_byte_buf* buf, uint32_t val);
+EXPORT int netlib_write_uint32(netlib_byte_buf* buf, uint32_t val);
 
 #define netlib_write_int8(buf, val) netlib_write_uint8(buf, (uint8_t) val)
 
@@ -424,15 +422,15 @@ extern DECLSPEC int NETLIB_CALL netlib_write_uint32(netlib_byte_buf* buf, uint32
 
 #define netlib_write_int32(buf, val) netlib_write_uint32(buf, (uint32_t) val)
 
-extern DECLSPEC int NETLIB_CALL netlib_write_float(netlib_byte_buf* buf, float val);
+EXPORT int netlib_write_float(netlib_byte_buf* buf, float val);
 
 /* === Reading from a data === */
 
-extern DECLSPEC int NETLIB_CALL netlib_read_uint8(netlib_byte_buf* buf, uint8_t* val);
+EXPORT int netlib_read_uint8(netlib_byte_buf* buf, uint8_t* val);
 
-extern DECLSPEC int NETLIB_CALL netlib_read_uint16(netlib_byte_buf* buf, uint16_t* val);
+EXPORT int netlib_read_uint16(netlib_byte_buf* buf, uint16_t* val);
 
-extern DECLSPEC int NETLIB_CALL netlib_read_uint32(netlib_byte_buf* buf, uint32_t* val);
+EXPORT int netlib_read_uint32(netlib_byte_buf* buf, uint32_t* val);
 
 #define netlib_read_int8(buf, val) netlib_read_uint8(buf, (uint8_t*) val)
 
@@ -440,7 +438,7 @@ extern DECLSPEC int NETLIB_CALL netlib_read_uint32(netlib_byte_buf* buf, uint32_
 
 #define netlib_read_int32(buf, val) netlib_read_uint32(buf, (uint32_t*) val)
 
-extern DECLSPEC int NETLIB_CALL netlib_read_float(netlib_byte_buf* buf, float* val);
+EXPORT int netlib_read_float(netlib_byte_buf* buf, float* val);
 #ifdef __cplusplus
 }
 #endif
