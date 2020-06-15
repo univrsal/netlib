@@ -22,7 +22,7 @@
 #define FORCE_INLINE __forceinline
 #else
 #define EXPORT
-#define FORCE_INLINE __attribute__((always_inline)) static __inline__
+#define FORCE_INLINE inline __attribute__((always_inline)) 
 #endif
 
 #ifndef NULL

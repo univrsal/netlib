@@ -13,8 +13,8 @@
  */
 
 #include "platform.h"
-#include "netlib.h"
-#ifdef __unix__
+#include <netlib.h>
+#if defined(__unix__) || defined(__APPLE__)
 #include <unistd.h>
 #endif
 

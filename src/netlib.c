@@ -13,7 +13,7 @@
  */
 
 #include "platform.h"
-#include "netlib.h"
+#include <netlib.h>
 #include <string.h>
 #include <stdarg.h>
 
@@ -26,7 +26,7 @@ const netlib_version* netlib_get_version()
 
 static int netlib_started = 0;
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 #include <signal.h>
 
 int netlib_get_last_error(void)
