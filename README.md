@@ -1,4 +1,6 @@
 ## netlib
+![nightly build](https://github.com/univrsal/netlib/workflows/nightly%20build/badge.svg)
+
 SDL_net library without the dependency on SDL
 
 Adds byte buffer and utility methods:
