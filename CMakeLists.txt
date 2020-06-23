@@ -36,7 +36,9 @@ target_include_directories(netlib
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-include(GNUInstallDirs)
+if (NETLIB_ENABLE_INSTALL)
+    include(GNUInstallDirs)
+endif()
 
 if (NETLIB_ENABLE_SHARED)
     add_library(netlib_shared SHARED $<TARGET_OBJECTS:netlib>)
@@ -89,16 +91,20 @@ if (NETLIB_ENABLE_TESTS)
         add_dependencies(netlib_server netlib)
         target_link_libraries(netlib_server netlib)
     endif()
-
-    install(TARGETS netlib_client netlib_server DESTINATION bin)
+    
+    if (NETLIB_ENABLE_INSTALL)
+	install(TARGETS netlib_client netlib_server DESTINATION bin)
+    endif()
 endif()
 
 
 if (UNIX)
     configure_file("./pc/netlib.pc.in"
         "${PROJECT_BINARY_DIR}/${CMAKE_PROJECT_NAME}.pc" @ONLY)
-    install(FILES "${PROJECT_BINARY_DIR}/${CMAKE_PROJECT_NAME}.pc" DESTINATION
-        "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+    if (NETLIB_ENABLE_INSTALL)
+        install(FILES "${PROJECT_BINARY_DIR}/${CMAKE_PROJECT_NAME}.pc" DESTINATION
+	    "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+    endif()
 endif()
 
 include_directories(./include)
