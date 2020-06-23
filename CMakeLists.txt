@@ -4,6 +4,7 @@ project(netlib VERSION 1.0.1 LANGUAGES C)
 option(NETLIB_ENABLE_TESTS "Compile test binaries (default: ON)" ON)
 option(NETLIB_ENABLE_STATIC "Compile netlib_static library (default: OFF)" OFF)
 option(NETLIB_ENABLE_SHARED "Compile netlib_shared library (default: ON)" ON)
+option(NETLIB_ENABLE_INSTALL "Register files for install target (default: ON)" ON)
 
 if(MSVC)
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -41,19 +42,25 @@ if (NETLIB_ENABLE_SHARED)
     add_library(netlib_shared SHARED $<TARGET_OBJECTS:netlib>)
     set_target_properties(netlib_shared PROPERTIES OUTPUT_NAME netlib)
     target_link_libraries(netlib_shared ${netlib_PLATFORM_DEPS})
-    install(TARGETS netlib_shared DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    if (NETLIB_ENABLE_INSTALL)
+        install(TARGETS netlib_shared DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    endif()
 endif()
 
 if (NETLIB_ENABLE_STATIC)
     add_library(netlib_static STATIC $<TARGET_OBJECTS:netlib>)
     set_target_properties(netlib_static PROPERTIES OUTPUT_NAME netlib)
     target_link_libraries(netlib_static ${netlib_PLATFORM_DEPS})
-    install(TARGETS netlib_static DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    if (NETLIB_ENABLE_INSTALL)
+        install(TARGETS netlib_static DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    endif()
 endif()
 
 if (NETLIB_ENABLE_SHARED OR NETLIB_ENABLE_STATIC)
-    install(FILES ./include/netlib.h
-        DESTINATION include)
+    if (NETLIB_ENABLE_INSTALL)
+        install(FILES ./include/netlib.h
+            DESTINATION include)
+    endif()
 endif()
 
 
