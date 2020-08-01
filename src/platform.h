@@ -22,26 +22,36 @@
 
 #include <errno.h>
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(__WIN32__) || defined(WIN32)
 #define __USE_W32_SOCKETS
 #ifdef _WIN64
-#include <WinSock2.h>
-#include <WS2tcpip.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #else
 #include <winsock.h>
 /* NOTE: windows socklen_t is signed
  * and is defined only for winsock2. */
 typedef int socklen_t;
-#endif
+#endif /* W64 */
 #include <iphlpapi.h>
 #else /* UNIX */
 #include <sys/types.h>
+#ifdef __FreeBSD__
+#include <sys/socket.h>
+#endif
+#include <sys/ioctl.h>
+#include <sys/time.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <netinet/in.h>
+#ifndef __BEOS__
 #include <arpa/inet.h>
+#endif
 #include <netinet/tcp.h>
 #include <sys/socket.h>
 #include <net/if.h>
 #include <netdb.h>
-#endif
+#endif /* WIN32 */
 
 #ifndef __USE_W32_SOCKETS
 #ifdef __OS2__

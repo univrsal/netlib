@@ -18,6 +18,8 @@ if(MSVC)
     endif()
 endif()
 
+if(UNIX)
+endif()
 add_library(netlib OBJECT
     ./src/netlib.c
     ./src/netlib_tcp.c
@@ -91,9 +93,9 @@ if (NETLIB_ENABLE_TESTS)
         add_dependencies(netlib_server netlib)
         target_link_libraries(netlib_server netlib)
     endif()
-    
+
     if (NETLIB_ENABLE_INSTALL)
-	install(TARGETS netlib_client netlib_server DESTINATION bin)
+    install(TARGETS netlib_client netlib_server DESTINATION bin)
     endif()
 endif()
 
@@ -103,7 +105,7 @@ if (UNIX)
         "${PROJECT_BINARY_DIR}/${CMAKE_PROJECT_NAME}.pc" @ONLY)
     if (NETLIB_ENABLE_INSTALL)
         install(FILES "${PROJECT_BINARY_DIR}/${CMAKE_PROJECT_NAME}.pc" DESTINATION
-	    "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+        "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
     endif()
 endif()
 
