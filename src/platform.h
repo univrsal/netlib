@@ -22,7 +22,7 @@
 
 #include <errno.h>
 
-#if defined(__WIN32__) || defined(WIN32)
+#if defined(_WIN32) || defined(_WIN64)
 #define __USE_W32_SOCKETS
 #ifdef _WIN64
 #include <winsock2.h>
