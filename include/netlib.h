@@ -17,12 +17,21 @@
 
 #include <stdint.h>
 
+#ifndef EXPORT
 #ifdef _MSC_VER
 #define EXPORT __declspec(dllexport)
 #define FORCE_INLINE __forceinline
 #else
 #define EXPORT
-#define FORCE_INLINE inline __attribute__((always_inline)) 
+#endif
+#endif
+
+#ifndef FORCE_INLINE
+#ifdef _MSC_VER
+#define FORCE_INLINE __forceinline
+#else
+#define FORCE_INLINE inline __attribute__((always_inline))
+#endif
 #endif
 
 #ifndef NULL
